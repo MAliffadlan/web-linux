@@ -1,0 +1,224 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const files = [
+  {
+    name: "mectov-linux-2026.06.30-x86_64.iso",
+    size: "2.4 GiB",
+    date: "2026-06-30 00:00",
+    checksum: "a3f5b7d90d816c87f5e56e01a5b871c89f50e93b118b76251b689aef7a90f12c",
+    url: "https://file.mectov.my.id/share/oOcOH6sh"
+  },
+  {
+    name: "mectov-linux-2026.06.30-x86_64.iso.sig",
+    size: "566 B",
+    date: "2026-06-30 00:02",
+    checksum: "8f7d983c27e8ab8cd5e6c1e9f0293da277fa8f6e297abef182a93c9d78fa1b1c",
+    url: "#"
+  },
+  {
+    name: "mectov-linux-2026.06.30-x86_64.torrent",
+    size: "48 KiB",
+    date: "2026-06-30 00:05",
+    checksum: "f8c2b7d5a8e63cd82bf9d816e8b28f9d0c2e39fa8aef017c62b9a7fa3d16b67b",
+    url: "#"
+  },
+  {
+    name: "sha256sums.txt",
+    size: "244 B",
+    date: "2026-06-30 00:05",
+    checksum: "82f7ab6cd0d912cbef81ab7f6209d6c7b6f70a29ef827acb1d9bfcf7fa90d65b",
+    url: "#"
+  }
+];
+---
+
+<Layout title="Index of /iso" description="Download Mectov Linux ISOs, torrents, and signature files.">
+  <div class="container download-container">
+    
+    <header class="repo-header">
+      <h1 class="repo-title">Index of /iso/</h1>
+      <p class="repo-meta">> HTTP/2 Apache/2.4.62 (Unix) Server - mectov.org</p>
+    </header>
+
+    <div class="repo-listing-wrapper">
+      <table class="table-brutal">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Last Modified</th>
+            <th>Size</th>
+            <th>SHA256 Checksum</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Parent Directory Row -->
+          <tr>
+            <td>
+              <a href="/" class="repo-file-link parent-dir">../ (Parent Directory)</a>
+            </td>
+            <td>-</td>
+            <td>-</td>
+            <td class="mono-checksum">-</td>
+          </tr>
+          <!-- Files Rows -->
+          {files.map(file => (
+            <tr>
+              <td>
+                <a href={file.url} class="repo-file-link download-iso" download>{file.name}</a>
+              </td>
+              <td class="mono-meta">{file.date}</td>
+              <td class="mono-meta">{file.size}</td>
+              <td class="mono-checksum" title={file.checksum}>{file.checksum}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Verification Instructions Panel -->
+    <section class="verification-box">
+      <div class="verify-header">
+        <span class="warning-tag">WARNING</span>
+        <span class="verify-title">ISO INTEGRITY VERIFICATION REQUIRED</span>
+      </div>
+      <div class="verify-body">
+        <p class="verify-desc">
+          To ensure protection against MITM attacks or download corruption, verify the signature of your downloaded ISO using GPG:
+        </p>
+        <pre class="verify-code">
+# Import the Mectov ISO Signing Key
+$ gpg --keyserver keys.openpgp.org --recv-keys 0x9BFF18F2E23A4A1C
+
+# Verify the ISO download integrity
+$ gpg --verify mectov-linux-2026.06.30-x86_64.iso.sig mectov-linux-2026.06.30-x86_64.iso
+
+# Alternatively, verify SHA256 checksums:
+$ sha256sum -c sha256sums.txt
+        </pre>
+      </div>
+    </section>
+
+  </div>
+</Layout>
+
+<style>
+.download-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-top: 3rem;
+}
+
+.repo-header {
+  border-bottom: 2px solid var(--text-primary);
+  padding-bottom: 1rem;
+}
+
+.repo-title {
+  font-size: 2.5rem;
+  color: var(--accent-cyan);
+  text-transform: none;
+}
+
+.repo-meta {
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.repo-listing-wrapper {
+  overflow-x: auto;
+}
+
+.repo-file-link {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  font-weight: 700;
+  transition: none;
+}
+
+.repo-file-link:hover {
+  color: var(--accent-cyan);
+  background-color: var(--accent-red);
+}
+
+.repo-file-link.parent-dir {
+  color: var(--accent-red);
+}
+
+.repo-file-link.parent-dir:hover {
+  color: #FFF;
+  background-color: var(--accent-cyan);
+}
+
+.mono-meta {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.mono-checksum {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent-cyan);
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Verification instruction warning card */
+.verification-box {
+  border: 4px solid var(--accent-red);
+  background-color: #000;
+  margin-top: 1rem;
+  box-shadow: 6px 6px 0 var(--accent-cyan);
+}
+
+.verify-header {
+  background-color: var(--accent-red);
+  color: #000;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-weight: bold;
+}
+
+.warning-tag {
+  background-color: #000;
+  color: var(--accent-red);
+  padding: 0.1rem 0.5rem;
+  font-size: 0.75rem;
+  border: 1px solid #000;
+}
+
+.verify-title {
+  font-size: 0.9rem;
+}
+
+.verify-body {
+  padding: 1.5rem;
+}
+
+.verify-desc {
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.verify-code {
+  background-color: #0c0c14;
+  border: 1px solid var(--text-muted);
+  padding: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--accent-cyan);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+</style>

@@ -1,0 +1,135 @@
+---
+const { pathname } = Astro.url;
+// Normalize pathname (remove trailing slashes)
+const currentPath = pathname.replace(/\/$/, "");
+
+const navItems = [
+  { label: "[~]", path: "" },
+  { label: "[ISO]", path: "/download" },
+  { label: "[DOCS]", path: "/docs" },
+  { label: "[SRC]", path: "https://github.com/MAliffadlan/mectov-linux", external: true },
+  { label: "[ABT]", path: "/about" }
+];
+---
+<nav class="hud-nav" aria-label="Terminal HUD Navigation">
+  <div class="hud-terminal-header">
+    <span class="hud-dot red"></span>
+    <span class="hud-dot yellow"></span>
+    <span class="hud-dot green"></span>
+    <span class="hud-title">mectov-menu</span>
+  </div>
+  <ul class="hud-links">
+    {navItems.map(item => {
+      // Home page is an exact match; subpages start with path
+      const isActive = item.external 
+        ? false 
+        : (item.path === "" ? currentPath === "" : currentPath.startsWith(item.path));
+      
+      return (
+        <li>
+          <a 
+            href={item.path === "" ? "/" : item.path} 
+            class={`hud-link ${isActive ? 'active' : ''}`}
+            target={item.external ? "_blank" : undefined}
+            rel={item.external ? "noopener noreferrer" : undefined}
+          >
+            {item.label}
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+</nav>
+
+<style>
+.hud-nav {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  background-color: #000;
+  border: 3px solid #FFF;
+  z-index: 1000;
+  font-family: var(--font-mono);
+  box-shadow: 6px 6px 0 var(--accent-red);
+}
+
+.hud-terminal-header {
+  background-color: #FFF;
+  color: #000;
+  padding: 0.25rem 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+}
+
+.hud-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 0;
+  border: 1px solid #000;
+}
+.hud-dot.red { background-color: var(--accent-red); }
+.hud-dot.yellow { background-color: #FFFF00; }
+.hud-dot.green { background-color: var(--accent-cyan); }
+
+.hud-title {
+  margin-left: 0.25rem;
+  font-weight: 700;
+  font-size: 0.7rem;
+}
+
+.hud-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0;
+}
+
+.hud-link {
+  display: block;
+  padding: 0.35rem 1.5rem;
+  color: #FFF;
+  text-decoration: none;
+  font-weight: 700;
+  transition: none; /* Instant snap */
+}
+
+.hud-link:hover {
+  background-color: var(--accent-red);
+  color: #FFF;
+  padding-left: 1.75rem;
+}
+
+.hud-link.active {
+  background-color: var(--accent-cyan);
+  color: #000;
+}
+
+@media (max-width: 600px) {
+  .hud-nav {
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    box-shadow: none;
+    border-top: 3px solid #FFF;
+  }
+  .hud-links {
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 0.25rem 0;
+  }
+  .hud-link {
+    padding: 0.5rem;
+  }
+  .hud-link:hover {
+    padding-left: 0.5rem;
+  }
+  .hud-terminal-header {
+    display: none;
+  }
+}
+</style>

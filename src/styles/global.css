@@ -1,0 +1,210 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg-color: #0A0A0E;
+  --text-primary: #F0F0F0;
+  --text-muted: #8E8E9F;
+  --accent-cyan: #00FFD1;
+  --accent-red: #FF2A4B;
+  --border-width: 4px;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'Inter', sans-serif;
+}
+
+/* Global resets & scrollbars */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Monospace default for headings & code */
+h1, h2, h3, h4, h5, h6, code, pre, .mono {
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+/* Scrollbar: Raw, Zero Radius, Solid Borders */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+  border-left: 2px solid var(--text-muted);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--accent-red);
+  border: 2px solid var(--bg-color);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-cyan);
+}
+
+/* Selection */
+::selection {
+  background-color: var(--accent-cyan);
+  color: var(--bg-color);
+}
+
+/* Layout Utilities & Patterns */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* SVG Noise Overlay (Fixed, covers page for texture) */
+.grain-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Geometric Grid Background */
+.grid-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(142, 142, 159, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(142, 142, 159, 0.03) 1px, transparent 1px);
+}
+
+/* Asymmetric geometric shapes */
+.geometric-accent-1 {
+  position: absolute;
+  top: 10%;
+  right: -5%;
+  width: 300px;
+  height: 300px;
+  border: 1px solid rgba(0, 255, 209, 0.15);
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+.geometric-accent-2 {
+  position: absolute;
+  bottom: 15%;
+  left: 5%;
+  width: 400px;
+  height: 400px;
+  border: 1px solid rgba(255, 42, 75, 0.1);
+  border-radius: 0;
+  pointer-events: none;
+}
+
+/* Focus and interactive styles */
+a, button {
+  outline: none;
+}
+a:focus-visible, button:focus-visible {
+  outline: 3px solid var(--accent-cyan);
+  outline-offset: 3px;
+}
+
+/* Brutalist Button & Link System */
+.btn-brutal {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-transform: uppercase;
+  text-decoration: none;
+  background-color: transparent;
+  color: var(--text-primary);
+  border: var(--border-width) solid var(--text-primary);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0;
+  cursor: pointer;
+  transform: translate(0, 0);
+  transition: none; /* Instant snap */
+  box-shadow: 4px 4px 0 var(--text-primary);
+}
+
+.btn-brutal:hover {
+  background-color: var(--accent-red);
+  color: var(--text-primary);
+  border-color: var(--accent-red);
+  transform: translate(-4px, -4px);
+  box-shadow: 8px 8px 0 var(--accent-cyan);
+}
+
+.btn-brutal:active {
+  transform: translate(0, 0);
+  box-shadow: 4px 4px 0 var(--accent-cyan);
+}
+
+/* Quick snaps */
+.snap-hover {
+  transition: none;
+}
+.snap-hover:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 2px 2px 0 var(--accent-cyan);
+}
+
+/* Table styles for Downloads */
+.table-brutal {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  font-family: var(--font-mono);
+}
+
+.table-brutal th, .table-brutal td {
+  border: 2px solid var(--text-muted);
+  padding: 1rem;
+  text-align: left;
+}
+
+.table-brutal th {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--accent-cyan);
+}
+
+.table-brutal tr:hover td {
+  background-color: rgba(0, 255, 209, 0.03);
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+}
+
+/* Glitch Animation Classes */
+@keyframes glitch {
+  0% {
+    clip-path: inset(40% 0 61% 0);
+  }
+  20% {
+    clip-path: inset(92% 0 1% 0);
+  }
+  40% {
+    clip-path: inset(25% 0 58% 0);
+  }
+  60% {
+    clip-path: inset(80% 0 5% 0);
+  }
+  80% {
+    clip-path: inset(11% 0 82% 0);
+  }
+  100% {
+    clip-path: inset(50% 0 30% 0);
+  }
+}

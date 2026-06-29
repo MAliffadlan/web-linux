@@ -1,0 +1,120 @@
+---
+import HUDNav from '../components/HUDNav.astro';
+import MatrixBackground from '../components/MatrixBackground.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Mectov Linux - Distro built for speed. Powered by Arch & CachyOS." } = Astro.props;
+
+// Calculate build Unix timestamp
+const buildTimestamp = Math.floor(Date.now() / 1000);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- SEO Metadata -->
+    <title>{title} | MECTOV OS</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content={`${title} | MECTOV OS`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} | MECTOV OS`} />
+    <meta name="twitter:description" content={description} />
+  </head>
+  <body>
+    <!-- Brutalist aesthetic elements -->
+    <div class="grain-overlay" aria-hidden="true"></div>
+    <div class="grid-bg" aria-hidden="true"></div>
+    
+    <div class="geometric-accent-1" aria-hidden="true"></div>
+    <div class="geometric-accent-2" aria-hidden="true"></div>
+    
+    <!-- Canvas Easter Egg -->
+    <MatrixBackground />
+    
+    <!-- Navigation HUD -->
+    <HUDNav />
+    
+    <div class="layout-wrapper">
+      <main class="page-content" id="main-content">
+        <slot />
+      </main>
+
+      <footer class="system-footer">
+        <div class="footer-block">
+          <span class="muted">SYS:</span> <span class="active-status">ONLINE</span>
+        </div>
+        <div class="footer-block build-stamp">
+          <span class="muted">Last ISO Built:</span> {buildTimestamp}
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
+
+<style is:global>
+.layout-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-content {
+  flex: 1;
+  padding-bottom: 6rem; /* Extra space to prevent content clipping under the floating HUD */
+}
+
+.system-footer {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  background-color: #000;
+  border-top: 3px solid #FFF;
+  border-left: 3px solid #FFF;
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.5rem 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  z-index: 998;
+}
+
+.system-footer .muted {
+  color: var(--text-muted);
+}
+
+.system-footer .active-status {
+  color: var(--accent-cyan);
+}
+
+@media (max-width: 600px) {
+  .system-footer {
+    position: static;
+    border-left: none;
+    border-right: none;
+    border-top: 2px solid var(--text-muted);
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background-color: var(--bg-color);
+  }
+  
+  .page-content {
+    padding-bottom: 8rem; /* Extra space for the mobile sticky nav */
+  }
+}
+</style>

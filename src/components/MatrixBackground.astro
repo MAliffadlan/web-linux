@@ -1,0 +1,114 @@
+<canvas id="matrix-canvas" class="matrix-canvas" aria-hidden="true"></canvas>
+
+<style>
+.matrix-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999; /* Under HUD nav and content overlays, but above grid-bg */
+  pointer-events: none;
+  opacity: 0.15; /* Subdued background effect */
+  display: none;
+  background-color: transparent;
+}
+
+.matrix-canvas.active {
+  display: block;
+}
+</style>
+
+<script>
+  // Wait for DOM load
+  document.addEventListener('DOMContentLoaded', () => {
+    const canvas = document.getElementById('matrix-canvas') as HTMLCanvasElement;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let isActive = false;
+
+    // Characters from original matrix rain (half-width kana and alphanumeric)
+    const chars = "ｦｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ1234567890$#@&%*+=-";
+    const charArray = chars.split("");
+    const fontSize = 14;
+    let columns = 0;
+    let drops: number[] = [];
+
+    function resizeCanvas() {
+      if (!canvas) return;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      columns = Math.floor(canvas.width / fontSize);
+      drops = Array(columns).fill(1).map(() => Math.floor(Math.random() * -100)); // Stagger starting heights
+    }
+
+    function drawMatrix() {
+      if (!ctx || !canvas) return;
+      // Semi-transparent black block to create trailing fade effect
+      ctx.fillStyle = 'rgba(10, 10, 14, 0.08)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.font = `700 ${fontSize}px var(--font-mono, monospace)`;
+
+      for (let i = 0; i < drops.length; i++) {
+        // Occasionally mix cyan and red glyphs for brutality, but mostly signature cyan
+        const rand = Math.random();
+        if (rand < 0.05) {
+          ctx.fillStyle = '#FF2A4B'; // Accent Red
+        } else if (rand < 0.15) {
+          ctx.fillStyle = '#F0F0F0'; // Off White
+        } else {
+          ctx.fillStyle = '#00FFD1'; // Signature Cyan
+        }
+
+        const text = charArray[Math.floor(Math.random() * charArray.length)];
+        // Only draw if the drop is on screen (starts negative)
+        if (drops[i] > 0) {
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        }
+
+        // Send drop back to top after it exits the screen
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+
+    function update() {
+      drawMatrix();
+      animationFrameId = requestAnimationFrame(update);
+    }
+
+    function toggleMatrix() {
+      isActive = !isActive;
+      if (isActive) {
+        canvas.classList.add('active');
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        update();
+        console.log("[MECTOV OS] Matrix Mode: ENGAGED");
+      } else {
+        canvas.classList.remove('active');
+        cancelAnimationFrame(animationFrameId);
+        window.removeEventListener('resize', resizeCanvas);
+        if (ctx && canvas) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        console.log("[MECTOV OS] Matrix Mode: DISENGAGED");
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      // Toggle on tilde (~) or backtick (`)
+      if (e.key === '~' || e.key === '`') {
+        e.preventDefault();
+        toggleMatrix();
+      }
+    });
+  });
+</script>

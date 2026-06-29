@@ -1,0 +1,488 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Document categories/sections
+const manSections = [
+  { id: "installation", title: "MECTOV(8) - Installation" },
+  { id: "packages", title: "MECTOV-SYS(8) - Packages" },
+  { id: "desktop", title: "MECTOV-DE(1) - Desktop Config" },
+  { id: "performance", title: "MECTOV-OPT(8) - Performance" },
+];
+---
+
+<Layout title="Documentation" description="Mectov Linux system manuals. Read instructions for installation, packages, desktop config, and kernel tuning.">
+  <div class="container docs-container">
+    
+    <div class="docs-layout">
+      
+      <!-- Left Column: Man Page Index (Sidebar) -->
+      <aside class="man-sidebar">
+        <div class="sidebar-header">
+          <span class="sidebar-title">MAN-INDEX</span>
+        </div>
+        <div class="sidebar-body">
+          <p class="dir-title">/usr/share/man/</p>
+          <ul class="man-toc">
+            {manSections.map((sec, idx) => (
+              <li>
+                <button 
+                  data-section-target={sec.id} 
+                  class={`toc-btn ${idx === 0 ? 'active' : ''}`}
+                >
+                  <span class="tree-line">{idx === manSections.length - 1 ? '└── ' : '├── '}</span>
+                  <span class="btn-text">{sec.title.split(' ')[0]}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </aside>
+
+      <!-- Right Column: Interactive Man Page Display -->
+      <section class="man-display">
+        
+        <!-- SECTION: INSTALLATION -->
+        <article id="man-installation" class="man-page active">
+          <header class="man-header">
+            <span>MECTOV(8)</span>
+            <span class="man-header-center">Mectov System Administrator's Manual</span>
+            <span>MECTOV(8)</span>
+          </header>
+          
+          <div class="man-content">
+            <h2>NAME</h2>
+            <p class="man-indent">mectov - Arch Linux & CachyOS-based speed-optimized distribution installation guide</p>
+
+            <h2>SYNOPSIS</h2>
+            <p class="man-indent"><code>mectov-install [options] [target_device]</code></p>
+
+            <h2>DESCRIPTION</h2>
+            <p class="man-indent">
+              <strong>Mectov Linux</strong> is built specifically for users requiring extreme workstation responsiveness. It integrates the <strong>CachyOS repository</strong> and custom-compiled optimized kernel architectures (x86-64-v3 / x86-64-v4) directly into a stable Arch Linux baseline.
+            </p>
+
+            <h2>INSTALLATION PROCESS</h2>
+            <h3 class="man-sub">1. Partitioning the Target Disk</h3>
+            <p class="man-indent-2">
+              For modern systems, GPT partition layout with UEFI boot is strictly recommended. Partition your target drive using <code>cfdisk</code> or <code>parted</code>:
+            </p>
+            <pre class="code-block">
+# Create UEFI Boot Partition (512M, EFI System type)
+$ mkfs.fat -F 32 /dev/sdX1
+
+# Create Root Partition (ext4, Btrfs, or XFS)
+$ mkfs.btrfs -L MECTOV_ROOT /dev/sdX2
+            </pre>
+
+            <h3 class="man-sub">2. Bootstrapping the System</h3>
+            <p class="man-indent-2">
+              Mount your partitions and execute the bootstrap script to download optimized packages:
+            </p>
+            <pre class="code-block">
+$ mount /dev/sdX2 /mnt
+$ mkdir -p /mnt/boot
+$ mount /dev/sdX1 /mnt/boot
+
+# Install basic packages and the optimized kernel
+$ pacstrap -K /mnt base base-devel linux-cachyos linux-cachyos-headers linux-firmware neovim git
+            </pre>
+
+            <h2>BUGS</h2>
+            <p class="man-indent">Report installation issues to the Mectov bugtracker at https://github.com/mectov-linux/mectov/issues</p>
+
+            <h2>SEE ALSO</h2>
+            <p class="man-indent"><code>pacman(8)</code>, <code>mkinitcpio(8)</code>, <code>cachyos-config(8)</code></p>
+          </div>
+          
+          <footer class="man-footer">
+            <span>Mectov 1.0</span>
+            <span class="man-footer-center">2026-06-30</span>
+            <span>MECTOV(8)</span>
+          </footer>
+        </article>
+
+        <!-- SECTION: PACKAGES -->
+        <article id="man-packages" class="man-page">
+          <header class="man-header">
+            <span>MECTOV-SYS(8)</span>
+            <span class="man-header-center">Mectov System Administrator's Manual</span>
+            <span>MECTOV-SYS(8)</span>
+          </header>
+          
+          <div class="man-content">
+            <h2>NAME</h2>
+            <p class="man-indent">mectov-sys - Package repository config and maintenance</p>
+
+            <h2>DESCRIPTION</h2>
+            <p class="man-indent">
+              Mectov Linux utilizes a dual-tier package management ecosystem. It inherits all official <strong>Arch Linux</strong> repositories and prepends the <strong>CachyOS Repository</strong> database to retrieve optimized packages compiled with native optimizations.
+            </p>
+
+            <h2>REPOSITORIES</h2>
+            <p class="man-indent">
+              The package database order in <code>/etc/pacman.conf</code> is configured as follows:
+            </p>
+            <pre class="code-block">
+[cachyos-v3]
+Include = /etc/pacman.d/cachyos-mirrorlist
+
+[cachyos-core-v3]
+Include = /etc/pacman.d/cachyos-mirrorlist
+
+[cachyos-extra-v3]
+Include = /etc/pacman.d/cachyos-mirrorlist
+
+[core]
+Include = /etc/pacman.d/mirrorlist
+
+[extra]
+Include = /etc/pacman.d/mirrorlist
+            </pre>
+
+            <h2>BASIC OPERATIONS</h2>
+            <h3 class="man-sub">Installing Packages</h3>
+            <p class="man-indent-2">Install a package from the repositories using pacman:</p>
+            <pre class="code-block">
+$ sudo pacman -S alacritty
+            </pre>
+
+            <h3 class="man-sub">Sync and System Upgrade</h3>
+            <p class="man-indent-2">Sync mirror lists and perform a complete system rolling-release upgrade:</p>
+            <pre class="code-block">
+$ sudo pacman -Syu
+            </pre>
+          </div>
+          
+          <footer class="man-footer">
+            <span>Mectov 1.0</span>
+            <span class="man-footer-center">2026-06-30</span>
+            <span>MECTOV-SYS(8)</span>
+          </footer>
+        </article>
+
+        <!-- SECTION: DESKTOP -->
+        <article id="man-desktop" class="man-page">
+          <header class="man-header">
+            <span>MECTOV-DE(1)</span>
+            <span class="man-header-center">Mectov User Commands Manual</span>
+            <span>MECTOV-DE(1)</span>
+          </header>
+          
+          <div class="man-content">
+            <h2>NAME</h2>
+            <p class="man-indent">mectov-de - Desktop interface configurations (KDE Plasma / Hyprland)</p>
+
+            <h2>DESCRIPTION</h2>
+            <p class="man-indent">
+              Mectov Linux ships with two preconfigured environments: a full-featured <strong>KDE Plasma 6 (Wayland)</strong> desktop for stability and a tiling-window compositor <strong>Hyprland</strong> for high-productivity development workflows.
+            </p>
+
+            <h2>HYPRLAND KEYBINDINGS</h2>
+            <p class="man-indent">Standard keyboard configurations to control your desktop layout:</p>
+            <pre class="code-block">
+$mod = SUPER
+
+# Core Windows controls
+bind = $mod, Q, killactive,
+bind = $mod, F, togglefloating,
+bind = $mod, M, fullscreen,
+
+# Launch applications
+bind = $mod, RETURN, exec, alacritty
+bind = $mod, D, exec, rofi -show drun
+
+# Move focus with arrow keys
+bind = $mod, left, movefocus, l
+bind = $mod, right, movefocus, r
+bind = $mod, up, movefocus, u
+bind = $mod, down, movefocus, d
+            </pre>
+
+            <h2>DOTFILES LOCATION</h2>
+            <p class="man-indent">All desktop customization files reside in the user directory:</p>
+            <p class="man-indent-2"><code>~/.config/hypr/</code> - Window manager configuration</p>
+            <p class="man-indent-2"><code>~/.config/alacritty/</code> - Terminal style files</p>
+            <p class="man-indent-2"><code>~/.config/waybar/</code> - Status bar config & layouts</p>
+          </div>
+          
+          <footer class="man-footer">
+            <span>Mectov 1.0</span>
+            <span class="man-footer-center">2026-06-30</span>
+            <span>MECTOV-DE(1)</span>
+          </footer>
+        </article>
+
+        <!-- SECTION: PERFORMANCE -->
+        <article id="man-performance" class="man-page">
+          <header class="man-header">
+            <span>MECTOV-OPT(8)</span>
+            <span class="man-header-center">Mectov System Administrator's Manual</span>
+            <span>MECTOV-OPT(8)</span>
+          </header>
+          
+          <div class="man-content">
+            <h2>NAME</h2>
+            <p class="man-indent">mectov-opt - Performance tuning and kernel scheduling optimizations</p>
+
+            <h2>DESCRIPTION</h2>
+            <p class="man-indent">
+              The core strength of Mectov Linux is its speed. Hardware scheduling, memory cache parameters, and network packet handlers are fine-tuned for high throughput.
+            </p>
+
+            <h2>KERNEL SCHEDULER: BORE</h2>
+            <p class="man-indent">
+              By default, Mectov runs the **BORE (Burst-Oriented Response Enhancer)** scheduler. It optimizes scheduling priorities dynamically, preventing background tasks from bottlenecking your foreground desktop UI.
+            </p>
+
+            <h2>CPU & THERMAL CONFIGURATION</h2>
+            <p class="man-indent">Ensure optimal CPU governors and thermal configurations are active:</p>
+            <pre class="code-block">
+# Check active CPU governor (performance/schedutil)
+$ cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+
+# Enable performance governor on AC power
+$ sudo cpupower frequency-set -g performance
+            </pre>
+
+            <h2>SYSCTL KERNEL PARAMETERS</h2>
+            <p class="man-indent">Recommended tweaks configured in <code>/etc/sysctl.d/99-mectov.conf</code>:</p>
+            <pre class="code-block">
+# Decrease virtual memory swap aggressive level
+vm.swappiness = 10
+
+# Increase maximum file descriptors limits
+fs.file-max = 2097152
+
+# Speed up TCP window scaling
+net.core.rmem_max = 16777216
+net.core.wmem_max = 16777216
+            </pre>
+          </div>
+          
+          <footer class="man-footer">
+            <span>Mectov 1.0</span>
+            <span class="man-footer-center">2026-06-30</span>
+            <span>MECTOV-OPT(8)</span>
+          </footer>
+        </article>
+
+      </section>
+      
+    </div>
+
+  </div>
+</Layout>
+
+<style>
+.docs-container {
+  padding-top: 3rem;
+}
+
+.docs-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 850px) {
+  .docs-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Sidebar Index Styles */
+.man-sidebar {
+  background-color: #000;
+  border: 3px solid var(--text-primary);
+  box-shadow: 5px 5px 0 var(--accent-red);
+}
+
+.sidebar-header {
+  background-color: var(--text-primary);
+  color: var(--bg-color);
+  padding: 0.35rem 0.75rem;
+  font-family: var(--font-mono);
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.sidebar-body {
+  padding: 1rem;
+}
+
+.dir-title {
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.man-toc {
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+.man-toc li {
+  margin-bottom: 0.25rem;
+}
+
+.toc-btn {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  padding: 0.2rem 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  transition: none;
+}
+
+.toc-btn:hover .btn-text {
+  color: var(--accent-cyan);
+  background-color: rgba(0, 255, 209, 0.1);
+}
+
+.toc-btn.active .btn-text {
+  color: var(--bg-color);
+  background-color: var(--accent-cyan);
+  font-weight: bold;
+}
+
+.tree-line {
+  color: var(--text-muted);
+  white-space: pre;
+}
+
+.btn-text {
+  padding: 0.1rem 0.4rem;
+}
+
+/* Man Display Styles */
+.man-display {
+  background-color: #000;
+  border: 3px solid var(--accent-cyan);
+  color: var(--accent-cyan);
+  font-family: var(--font-mono);
+  box-shadow: 6px 6px 0 var(--text-primary);
+  overflow: hidden;
+}
+
+.man-page {
+  display: none;
+  padding: 1.5rem;
+}
+
+.man-page.active {
+  display: block;
+}
+
+.man-header, .man-footer {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--accent-cyan);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+}
+
+.man-footer {
+  border-bottom: none;
+  border-top: 1px solid var(--accent-cyan);
+  padding-bottom: 0;
+  padding-top: 0.5rem;
+  margin-bottom: 0;
+  margin-top: 2rem;
+}
+
+.man-header-center, .man-footer-center {
+  text-align: center;
+}
+
+/* Man contents typography */
+.man-content h2 {
+  font-size: 1.15rem;
+  text-transform: uppercase;
+  color: #FFF;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px dashed rgba(0, 255, 209, 0.3);
+  padding-bottom: 0.2rem;
+}
+
+.man-content h2:first-of-type {
+  margin-top: 0;
+}
+
+.man-content p {
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  line-height: 1.4;
+  font-size: 0.9rem;
+}
+
+.man-indent {
+  padding-left: 2rem;
+}
+
+.man-indent-2 {
+  padding-left: 3rem;
+}
+
+.man-sub {
+  font-size: 0.95rem;
+  color: var(--accent-red);
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  padding-left: 2rem;
+}
+
+.man-content code {
+  background-color: #101018;
+  color: var(--accent-cyan);
+  padding: 0.1rem 0.4rem;
+  font-size: 0.85rem;
+  border: 1px solid rgba(0, 255, 209, 0.2);
+}
+
+.code-block {
+  background-color: #050508;
+  border: 1px solid rgba(0, 255, 209, 0.3);
+  padding: 1rem;
+  margin: 1rem 0 1rem 2rem;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+</style>
+
+<script>
+  // Simple tab switching logic for Man Pages
+  document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll('.toc-btn');
+    const pages = document.querySelectorAll('.man-page');
+
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        const targetId = button.getAttribute('data-section-target');
+        
+        // Remove active class from all buttons and pages
+        buttons.forEach(btn => btn.classList.remove('active'));
+        pages.forEach(pg => pg.classList.remove('active'));
+
+        // Add active class to clicked button and target page
+        button.classList.add('active');
+        const targetPage = document.getElementById(`man-${targetId}`);
+        if (targetPage) {
+          targetPage.classList.add('active');
+          // Scroll page view back to top if offscreen
+          window.scrollTo({ top: 0, behavior: 'auto' });
+        }
+      });
+    });
+  });
+</script>

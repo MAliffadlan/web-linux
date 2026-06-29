@@ -1,0 +1,189 @@
+---
+interface Props {
+  text?: string;
+  tag?: 'h1' | 'h2' | 'div';
+}
+
+const { text = "MECTOV", tag: Tag = "h1" } = Astro.props;
+---
+<div class="glitch-wrapper">
+  <Tag class="glitch" data-text={text}>{text}</Tag>
+</div>
+
+<style>
+.glitch-wrapper {
+  display: inline-block;
+  overflow: hidden;
+}
+
+.glitch {
+  position: relative;
+  font-size: 5rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  letter-spacing: -2px;
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .glitch {
+    font-size: 3.5rem;
+  }
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-color);
+}
+
+.glitch::before {
+  left: 3px;
+  text-shadow: -2px 0 var(--accent-cyan);
+  animation: glitch-anim-1 2s infinite linear alternate-reverse;
+}
+
+.glitch::after {
+  left: -3px;
+  text-shadow: -2px 0 var(--accent-red);
+  animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim-1 {
+  0% {
+    clip-path: inset(20% 0 80% 0);
+  }
+  5% {
+    clip-path: inset(10% 0 85% 0);
+  }
+  10% {
+    clip-path: inset(40% 0 35% 0);
+  }
+  15% {
+    clip-path: inset(80% 0 10% 0);
+  }
+  20% {
+    clip-path: inset(5% 0 92% 0);
+  }
+  25% {
+    clip-path: inset(60% 0 30% 0);
+  }
+  30% {
+    clip-path: inset(30% 0 65% 0);
+  }
+  35% {
+    clip-path: inset(90% 0 5% 0);
+  }
+  40% {
+    clip-path: inset(15% 0 80% 0);
+  }
+  45% {
+    clip-path: inset(50% 0 45% 0);
+  }
+  50% {
+    clip-path: inset(70% 0 15% 0);
+  }
+  55% {
+    clip-path: inset(25% 0 70% 0);
+  }
+  60% {
+    clip-path: inset(85% 0 5% 0);
+  }
+  65% {
+    clip-path: inset(10% 0 85% 0);
+  }
+  70% {
+    clip-path: inset(45% 0 50% 0);
+  }
+  75% {
+    clip-path: inset(65% 0 30% 0);
+  }
+  80% {
+    clip-path: inset(5% 0 90% 0);
+  }
+  85% {
+    clip-path: inset(30% 0 60% 0);
+  }
+  90% {
+    clip-path: inset(80% 0 15% 0);
+  }
+  95% {
+    clip-path: inset(15% 0 80% 0);
+  }
+  100% {
+    clip-path: inset(50% 0 40% 0);
+  }
+}
+
+@keyframes glitch-anim-2 {
+  0% {
+    clip-path: inset(10% 0 85% 0);
+  }
+  5% {
+    clip-path: inset(70% 0 15% 0);
+  }
+  10% {
+    clip-path: inset(30% 0 60% 0);
+  }
+  15% {
+    clip-path: inset(95% 0 2% 0);
+  }
+  20% {
+    clip-path: inset(15% 0 80% 0);
+  }
+  25% {
+    clip-path: inset(50% 0 45% 0);
+  }
+  30% {
+    clip-path: inset(85% 0 10% 0);
+  }
+  35% {
+    clip-path: inset(5% 0 90% 0);
+  }
+  40% {
+    clip-path: inset(60% 0 35% 0);
+  }
+  45% {
+    clip-path: inset(25% 0 70% 0);
+  }
+  50% {
+    clip-path: inset(80% 0 15% 0);
+  }
+  55% {
+    clip-path: inset(40% 0 55% 0);
+  }
+  60% {
+    clip-path: inset(10% 0 85% 0);
+  }
+  65% {
+    clip-path: inset(90% 0 5% 0);
+  }
+  70% {
+    clip-path: inset(30% 0 65% 0);
+  }
+  75% {
+    clip-path: inset(55% 0 40% 0);
+  }
+  80% {
+    clip-path: inset(5% 0 92% 0);
+  }
+  85% {
+    clip-path: inset(80% 0 10% 0);
+  }
+  90% {
+    clip-path: inset(15% 0 80% 0);
+  }
+  95% {
+    clip-path: inset(45% 0 50% 0);
+  }
+  100% {
+    clip-path: inset(70% 0 20% 0);
+  }
+}
+</style>
